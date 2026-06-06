@@ -56,7 +56,7 @@ php artisan key:generate
 
 ### 5. Setup Database
 
-**Migrate + Seed **
+**Migrate + Seed:**
 
 ```bash
 php artisan migrate:fresh --seed
