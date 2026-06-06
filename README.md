@@ -1,6 +1,6 @@
 # LiquidPedia - E-Commerce Liquid & Vape
 
-Aplikasi e-commerce untuk liquid dan vape berbasis Laravel dengan fitur location picker menggunakan Leaflet.js + OpenStreetMap.
+Aplikasi e-commerce untuk liquid dan vape berbasis Laravel 13 dengan fitur location picker menggunakan Leaflet.js + OpenStreetMap.
 
 ## Persyaratan Sistem
 
