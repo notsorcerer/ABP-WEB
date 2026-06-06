@@ -17,7 +17,7 @@ Aplikasi e-commerce untuk liquid dan vape berbasis Laravel dengan fitur location
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/{username}/liquidpedia.git
+git clone https://github.com/notsorcerer/ABP-WEB.git
 cd liquidpedia
 ```
 
@@ -56,12 +56,7 @@ php artisan key:generate
 
 ### 5. Setup Database
 
-**Opsi A — Import SQL (jika file `database/liquidpedia.sql` disertakan):**
-- Buka phpMyAdmin (http://localhost/phpmyadmin)
-- Buat database baru: `liquidpedia`
-- Import file `database/liquidpedia.sql`
-
-**Opsi B — Migrate + Seed (disarankan):**
+**Migrate + Seed **
 
 ```bash
 php artisan migrate:fresh --seed
