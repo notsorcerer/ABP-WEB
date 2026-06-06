@@ -1,58 +1,186 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LiquidPedia - E-Commerce Liquid & Vape
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi e-commerce untuk liquid dan vape berbasis Laravel dengan fitur location picker menggunakan Leaflet.js + OpenStreetMap.
 
-## About Laravel
+## Persyaratan Sistem
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Komponen | Versi Minimal | Keterangan |
+|---|---|---|
+| PHP | 8.2+ | Extension: `gd`, `fileinfo`, `pdo_mysql`, `mbstring`, `bcmath` |
+| MySQL / MariaDB | 5.7+ / 10.4+ | XAMPP 8.2+ recommendation |
+| Composer | 2.x | Dependency Manager PHP |
+| Node.js | 18+ | Build Vite asset |
+| NPM | 9+ | |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Langkah Instalasi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 1. Clone Repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/{username}/liquidpedia.git
+cd liquidpedia
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependency
 
-## Contributing
+```bash
+composer install
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Konfigurasi Environment
 
-## Code of Conduct
+```bash
+cp .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Sesuaikan isi `.env` terutama bagian database:
 
-## Security Vulnerabilities
+```env
+APP_NAME=LiquidPedia
+APP_URL=http://localhost:8000
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=liquidpedia
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## License
+### 4. Generate App Key
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan key:generate
+```
+
+### 5. Setup Database
+
+**Opsi A — Import SQL (jika file `database/liquidpedia.sql` disertakan):**
+- Buka phpMyAdmin (http://localhost/phpmyadmin)
+- Buat database baru: `liquidpedia`
+- Import file `database/liquidpedia.sql`
+
+**Opsi B — Migrate + Seed (disarankan):**
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Perintah ini akan:
+- Membuat semua tabel (termasuk `orders`, `order_items`)
+- Mengisi 2 kategori (Vape, Liquid)
+- Mengisi 16 produk
+- Membuat 1 akun admin
+
+### 6. Storage Link
+
+```bash
+php artisan storage:link
+```
+
+Command ini membuat symlink `public/storage` → `storage/app/public` agar file gambar produk bisa diakses publik.
+
+### 7. Build Asset
+
+```bash
+npm run build
+```
+
+### 8. Jalankan Server
+
+```bash
+php artisan serve
+```
+
+Akses aplikasi di: **http://localhost:8000**
+
+---
+
+## Struktur Database
+
+Tabel utama dari migration:
+
+| Tabel | Deskripsi |
+|---|---|
+| `users` | Customer + Admin (`is_admin` flag) |
+| `categories` | Kategori produk (Vape / Liquid) |
+| `products` | Produk dengan relasi ke categories |
+| `orders` | Pesanan dengan data pengiriman + koordinat |
+| `order_items` | Item detail per pesanan |
+| `sessions` | Session cart pengguna |
+| `cache` / `cache_locks` | Cache Laravel |
+
+Kolom koordinat: `shipping_latitude` & `shipping_longitude` (string, nullable) di tabel `orders`.
+
+---
+
+## Akun Login
+
+### Admin
+- **URL:** http://localhost:8000/admin/login
+- **Email:** `admin@liquidpedia.id`
+- **Password:** `admin123`
+- **Role:** CRUD produk & kategori, kelola pesanan
+
+### Customer
+- **URL:** http://localhost:8000/register
+- **Registrasi:** Manual melalui halaman register
+- **Role:** Belanja, checkout, lihat riwayat pesanan
+
+---
+
+## Fitur Utama
+
+### Storefront (Public)
+- Halaman utama dengan produk best seller & new arrival
+- Katalog produk per kategori
+- Detail produk
+- Keranjang belanja (session-based)
+- Filter & pencarian produk
+
+### Checkout
+- Form data pengiriman (nama, alamat, provinsi, kota, kecamatan, kode pos, no telepon, email)
+- **Location Picker** — modal interaktif menggunakan Leaflet.js + OpenStreetMap:
+  - Pencarian alamat via Nominatim API (gratis, tanpa API key)
+  - Map interaktif dengan draggable marker
+  - Deteksi lokasi otomatis via browser geolocation
+  - Reverse geocoding (otomatis menampilkan nama alamat)
+- Metode pembayaran: Transfer Bank, E-Wallet, QRIS, COD
+- Konfirmasi pesanan via WhatsApp
+
+### Admin Panel (`/admin/login`)
+- Dashboard
+- CRUD Produk (termasuk upload gambar lokal)
+- CRUD Kategori
+- Manajemen Pesanan (status pembayaran)
+
+### Auth
+- Register / Login customer
+- Profil customer
+- Admin login terpisah (cek `is_admin`)
+
+---
+
+## Troubleshooting
+
+| Masalah | Solusi |
+|---|---|
+| `Target class [xxx] does not exist` | Jalankan `composer dump-autoload` |
+| Gambar tidak muncul | Jalankan `php artisan storage:link` |
+| Vite error build | Jalankan `npm install && npm run build` |
+| `[1045] Access denied for user` | Cek user/password database di `.env` |
+| Halaman kosong / 500 | Cek `storage/logs/laravel.log` |
+| Leaflet map tidak muncul | Pastikan koneksi internet aktif (CDN) |
+
+---
+
+## Catatan Teknis
+
+- Warna tema: `bg #EEEEEE`, `Primary #D84040`, `Secondary #8E1616`, `Accent #1D1616`
+- Font: Inter (CDN Bunny Fonts)
+- Icon: Heroicons (inline SVG)
+- Map: Leaflet.js + OpenStreetMap + Nominatim (gratis, tanpa API key)
+- Cart: Laravel Session (database session)
+- Produk image: support URL eksternal dan upload lokal ke `storage/app/public/products/`
+- WhatsApp: nomor admin `082191488380` (floating button di semua halaman)
