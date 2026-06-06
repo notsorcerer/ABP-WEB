@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="white"/>
+  <rect x="20" y="20" width="260" height="260" rx="20" fill="none" stroke="#D84040" stroke-width="4"/>
+  <text x="150" y="120" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#1D1616">QRIS</text>
+  <text x="150" y="150" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#8E1616">LiquidPedia</text>
+  <rect x="90" y="170" width="120" height="80" fill="#EEEEEE" rx="8"/>
+  <text x="150" y="215" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#9CA3AF">Scan untuk bayar</text>
+</svg>
