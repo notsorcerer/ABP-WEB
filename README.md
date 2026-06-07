@@ -6,7 +6,7 @@ Aplikasi e-commerce untuk liquid dan vape berbasis Laravel 13 dengan fitur locat
 
 | Komponen | Versi Minimal | Keterangan |
 |---|---|---|
-| PHP | 8.2+ | Extension: `gd`, `fileinfo`, `pdo_mysql`, `mbstring`, `bcmath` |
+| PHP | 8.3 | Extension: `gd`, `fileinfo`, `pdo_mysql`, `mbstring`, `bcmath` |
 | MySQL / MariaDB | 5.7+ / 10.4+ | XAMPP 8.2+ recommendation |
 | Composer | 2.x | Dependency Manager PHP |
 | Node.js | 18+ | Build Vite asset |
