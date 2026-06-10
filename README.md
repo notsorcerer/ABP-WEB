@@ -92,18 +92,19 @@ Akses aplikasi di: **http://localhost:8000**
 
 ---
 
+
 ## Struktur Database
 
 Tabel utama dari migration:
 
 | Tabel | Deskripsi |
-|---|---|---|
+|--------|-----------|
 | `users` | Customer + Admin (`is_admin` flag) |
 | `categories` | Kategori produk (Vape / Liquid) |
 | `products` | Produk dengan relasi ke categories |
 | `orders` | Pesanan dengan data pengiriman + koordinat |
 | `order_items` | Item detail per pesanan |
-| `cart_items` | Cart untuk REST API (user_id, product_id, quantity) |
+| `cart_items` | Cart untuk REST API (`user_id`, `product_id`, `quantity`) |
 | `personal_access_tokens` | Token autentikasi untuk REST API (Sanctum) |
 | `sessions` | Session cart pengguna web |
 | `cache` / `cache_locks` | Cache Laravel |
