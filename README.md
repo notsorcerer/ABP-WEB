@@ -6,7 +6,7 @@ Aplikasi e-commerce untuk liquid dan vape berbasis Laravel 13 dengan fitur locat
 
 | Komponen | Versi Minimal | Keterangan |
 |---|---|---|
-| PHP | 8.3 | Extension: `gd`, `fileinfo`, `pdo_mysql`, `mbstring`, `bcmath` |
+| PHP | 8.3+ | Extension: `gd`, `fileinfo`, `pdo_mysql`, `mbstring`, `bcmath` |
 | MySQL / MariaDB | 5.7+ / 10.4+ | XAMPP 8.2+ recommendation |
 | Composer | 2.x | Dependency Manager PHP |
 | Node.js | 18+ | Build Vite asset |
@@ -97,13 +97,15 @@ Akses aplikasi di: **http://localhost:8000**
 Tabel utama dari migration:
 
 | Tabel | Deskripsi |
-|---|---|
+|---|---|---|
 | `users` | Customer + Admin (`is_admin` flag) |
 | `categories` | Kategori produk (Vape / Liquid) |
 | `products` | Produk dengan relasi ke categories |
 | `orders` | Pesanan dengan data pengiriman + koordinat |
 | `order_items` | Item detail per pesanan |
-| `sessions` | Session cart pengguna |
+| `cart_items` | Cart untuk REST API (user_id, product_id, quantity) |
+| `personal_access_tokens` | Token autentikasi untuk REST API (Sanctum) |
+| `sessions` | Session cart pengguna web |
 | `cache` / `cache_locks` | Cache Laravel |
 
 Kolom koordinat: `shipping_latitude` & `shipping_longitude` (string, nullable) di tabel `orders`.
@@ -155,6 +157,32 @@ Kolom koordinat: `shipping_latitude` & `shipping_longitude` (string, nullable) d
 - Profil customer
 - Admin login terpisah (cek `is_admin`)
 
+### REST API (`/api/`)
+- **Autentikasi token** menggunakan Laravel Sanctum
+- 16 endpoint RESTful: produk, kategori, cart, orders, auth
+- Cart berbasis database (bukan session) — siap untuk mobile app
+- Format response JSON konsisten (`success`, `message`, `data`, `meta`)
+- **16 endpoint** lengkap untuk mendukung aplikasi mobile (Flutter)
+
+| Method | Endpoint | Auth | Fungsi |
+|--------|----------|------|--------|
+| `POST` | `/api/auth/register` | ❌ | Registrasi → dapat token |
+| `POST` | `/api/auth/login` | ❌ | Login → dapat token |
+| `POST` | `/api/auth/logout` | ✅ | Hapus token |
+| `GET` | `/api/auth/user` | ✅ | Profil user |
+| `GET` | `/api/products` | ❌ | List produk + filter + pagination |
+| `GET` | `/api/products/home` | ❌ | Data beranda (best seller, new arrival) |
+| `GET` | `/api/products/{id}` | ❌ | Detail produk |
+| `GET` | `/api/categories` | ❌ | List kategori |
+| `GET` | `/api/cart` | ✅ | Lihat cart |
+| `POST` | `/api/cart/{product}` | ✅ | Tambah ke cart |
+| `PUT` | `/api/cart/{product}` | ✅ | Update quantity |
+| `DELETE` | `/api/cart/{product}` | ✅ | Hapus dari cart |
+| `POST` | `/api/orders` | ✅ | Checkout / buat pesanan |
+| `GET` | `/api/orders` | ✅ | Riwayat pesanan |
+| `GET` | `/api/orders/{id}` | ✅ | Detail pesanan |
+| `GET` | `/api/orders/{id}/payment` | ✅ | Instruksi pembayaran |
+
 ---
 
 ## Troubleshooting
@@ -176,6 +204,10 @@ Kolom koordinat: `shipping_latitude` & `shipping_longitude` (string, nullable) d
 - Font: Inter (CDN Bunny Fonts)
 - Icon: Heroicons (inline SVG)
 - Map: Leaflet.js + OpenStreetMap + Nominatim (gratis, tanpa API key)
-- Cart: Laravel Session (database session)
+- Cart Web: Laravel Session (database session)
+- Cart API: Database table `cart_items` (user-based, bukan session)
 - Produk image: support URL eksternal dan upload lokal ke `storage/app/public/products/`
 - WhatsApp: nomor admin `082191488380` (floating button di semua halaman)
+- API Auth: Laravel Sanctum (token-based, pakai `auth:sanctum` middleware)
+- File Postman: `LiquidPedia-API.postman_collection.json` (import ke Postman untuk testing API)
+- Dokumentasi lengkap: lihat `Documentation.md`
