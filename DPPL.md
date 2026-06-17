@@ -11,8 +11,8 @@
 - [B1. Arsitektur Perangkat Lunak](#b1-arsitektur-perangkat-lunak)
 - [B2. Daftar Use Case yang Akan Dirancang](#b2-daftar-use-case-yang-akan-dirancang)
 - [B3. Identifikasi Object dan Tipe Kelas](#b3-untuk-setiap-use-case--identifikasi-object-dan-tipe-kelas)
-- [B4. Data Sequence Diagram](#b4-untuk-setiap-use-case--data-sequence-diagram)
-- [B5. Deskripsi Halaman UI](#b5-untuk-setiap-use-case--deskripsi-halaman-ui)
+- [B4. Use Case Scenario & Deskripsi Halaman UI](#b4-untuk-setiap-use-case--use-case-scenario--deskripsi-halaman-ui)
+- [B5. Data Sequence Diagram](#b5-untuk-setiap-use-case--data-sequence-diagram)
 - [B6. Diagram Kelas Keseluruhan (Perancangan)](#b6-diagram-kelas-keseluruhan-perancangan)
 - [B7. Perancangan Algoritma](#b7-perancangan-algoritma)
 - [B8. Perancangan Query Database](#b8-perancangan-query-database)
@@ -181,7 +181,546 @@ Browser ← HTTP Response ← HTML ←──────────────
 
 ---
 
-## B4. Untuk SETIAP Use Case — Data Sequence Diagram
+## B4. Untuk SETIAP Use Case — Use Case Scenario & Deskripsi Halaman UI
+
+### UC-01: Registrasi Akun
+
+**Skenario Use Case #1 — Registrasi Akun**
+
+**i. Pre-Condition**
+- Pengguna belum memiliki akun sebelumnya.
+- Halaman registrasi dapat diakses melalui halaman utama aplikasi.
+
+**ii. Use Case Description**
+
+**a. Primary Flow**
+- Membuka halaman `/register`
+- Menampilkan formulir registrasi berisi kolom nama, email, password, dan konfirmasi password
+- Mengisi biodata pada form
+- Menekan tombol "Daftar"
+- Memvalidasi data input
+- Menambahkan data akun baru ke database
+- Mengalihkan ke halaman beranda
+- Menampilkan notifikasi "Registrasi berhasil"
+
+**b. Alternative Flow**
+- Membuka halaman `/register`
+- Menampilkan formulir registrasi
+- Mengisi data dengan format salah atau data tidak lengkap
+- Menekan tombol "Daftar"
+- Menampilkan pesan kesalahan validasi (email sudah terdaftar, password kurang dari 8 karakter, konfirmasi password tidak cocok)
+- Memperbaiki data dan menekan tombol "Daftar" kembali
+- Memvalidasi ulang data dan melanjutkan ke proses pembuatan akun jika valid
+- Jika data tetap tidak valid, kembali menampilkan pesan kesalahan
+
+**iii. Post-Condition**
+- Akun baru tersimpan di database.
+- Pengguna dapat melakukan login menggunakan akun yang telah dibuat.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-REG | Halaman Registrasi | Halaman untuk mendaftarkan akun customer baru |
+
+**v. Tabel Detail Objek UI**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| REG-01 | Input Text | Nama Lengkap | Wajib diisi, maksimal 255 karakter |
+| REG-02 | Input Email | Email | Wajib diisi, format email, harus unik |
+| REG-03 | Input Password | Password | Wajib diisi, minimal 8 karakter |
+| REG-04 | Input Password | Konfirmasi Password | Wajib diisi, harus sama dengan password |
+| REG-05 | Button | Daftar | Tombol submit untuk mendaftar |
+| REG-06 | Link | Sudah punya akun? Login | Tautan ke halaman login |
+
+---
+
+### UC-02: Login Akun
+
+**Skenario Use Case #2 — Login Akun**
+
+**i. Pre-Condition**
+- Pengguna sudah memiliki akun yang terdaftar.
+- Pengguna belum login ke dalam aplikasi.
+
+**ii. Use Case Description**
+
+**a. Primary Flow**
+- Membuka halaman `/login`
+- Menampilkan formulir login berisi kolom email, password, dan opsi "Ingat Saya"
+- Memasukkan email dan password
+- Menekan tombol "Login"
+- Memvalidasi kredensial login
+- Mengalihkan ke halaman beranda
+
+**b. Alternative Flow**
+- Membuka halaman `/login`
+- Menampilkan formulir login
+- Memasukkan email atau password yang salah
+- Menekan tombol "Login"
+- Menampilkan pesan "Email atau password salah"
+- Memasukkan kembali email dan password yang benar
+- Menekan tombol "Login" kembali
+- Memvalidasi kredensial dan melanjutkan ke halaman beranda jika valid
+- Jika masih salah, tetap di halaman login dengan pesan kesalahan
+
+**iii. Post-Condition**
+- Pengguna berhasil login dan session tersimpan.
+- Pengguna dapat mengakses halaman checkout, profil, dan riwayat pesanan.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-LOG | Halaman Login | Halaman untuk login customer |
+
+**v. Tabel Detail Objek UI**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| LOG-01 | Input Email | Email | Wajib diisi, format email |
+| LOG-02 | Input Password | Password | Wajib diisi |
+| LOG-03 | Checkbox | Ingat Saya | Opsi untuk menyimpan session login |
+| LOG-04 | Button | Login | Tombol submit untuk login |
+| LOG-05 | Link | Belum punya akun? Daftar | Tautan ke halaman register |
+
+---
+
+### UC-03: Melihat & Menyaring Produk
+
+**Skenario Use Case #3 — Melihat & Menyaring Produk**
+
+**i. Pre-Condition**
+- Pengguna membuka halaman utama aplikasi.
+- Data produk dan kategori sudah tersedia di database.
+
+**ii. Use Case Description**
+
+**a. Primary Flow**
+- Membuka URL `/`
+- Menampilkan halaman beranda berisi hero section, 4 produk best seller, 2 kartu kategori (Vape & Liquid), dan 4 produk new arrival
+- Membuka halaman `/products`
+- Menampilkan seluruh produk dalam bentuk grid
+- Menekan pill filter kategori (misal: "Vape")
+- Menyaring produk berdasarkan kategori yang dipilih
+- Menampilkan produk yang sudah difilter sesuai kategori
+
+**b. Alternative Flow**
+- Membuka halaman `/products` saat tidak ada produk
+- Menampilkan pesan "Tidak ada produk yang ditemukan"
+- Menekan pill kategori yang tidak memiliki slug valid
+- Menampilkan seluruh produk sebagai fallback
+
+**iii. Post-Condition**
+- Halaman beranda atau katalog produk sesuai filter ditampilkan.
+- Pengguna dapat memilih produk untuk melihat detail atau menambah ke keranjang.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-HOME | Halaman Beranda | Halaman utama aplikasi dengan hero, best seller, kategori, new arrival |
+| SCR-PROD | Halaman Katalog Produk | Grid produk dengan pill filter kategori |
+
+**v. Tabel Detail Objek UI — Beranda**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| HOME-01 | Section | Hero | Banner promosi utama dengan headline branding |
+| HOME-02 | Grid | Best Seller | 4 kartu produk best seller |
+| HOME-03 | Card | Kategori | 2 kartu kategori (Vape & Liquid) dengan link filter |
+| HOME-04 | Grid | New Arrival | 4 kartu produk baru dengan badge "BARU" |
+
+**v. Tabel Detail Objek UI — Katalog**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| PROD-01 | Pill Group | Filter Kategori | "Semua", "Vape", "Liquid" — klik untuk filter |
+| PROD-02 | Grid | Grid Produk | Responsive 1-4 kolom |
+| PROD-03 | Card | Kartu Produk | Gambar, nama, kategori badge, harga, tombol "Tambah ke Cart" |
+
+---
+
+### UC-04: Melihat Detail Produk
+
+**Skenario Use Case #4 — Melihat Detail Produk**
+
+**i. Pre-Condition**
+- Pengguna berada di halaman katalog produk.
+- Produk tersedia di database.
+
+**ii. Use Case Description**
+
+**a. Primary Flow**
+- Menekan salah satu kartu produk dari halaman katalog
+- Mengambil data produk dari database
+- Menampilkan halaman detail yang berisi breadcrumb, gambar produk dengan efek hover zoom, badge kategori/best seller/new arrival, harga, deskripsi, quantity selector (+/-), tombol "Tambah ke Cart", dan tabel info produk
+
+**b. Alternative Flow**
+- Tidak ada skenario alternatif khusus — halaman detail selalu dapat ditampilkan selama produk valid
+
+**iii. Post-Condition**
+- Informasi lengkap produk ditampilkan.
+- Pengguna dapat menambah produk ke keranjang.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-DET | Halaman Detail Produk | Halaman informasi lengkap satu produk |
+
+**v. Tabel Detail Objek UI**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| DET-01 | Breadcrumb | Navigasi | Beranda > Produk > Nama Produk |
+| DET-02 | Image | Gambar Produk | Efek hover zoom |
+| DET-03 | Badge | Badge Status | Badge kategori, "Best Seller", "BARU" |
+| DET-04 | Text | Harga | Format Rp |
+| DET-05 | Selector | Quantity | Tombol - / input number / +, minimal 1 |
+| DET-06 | Button | Tambah ke Cart | POST /cart/add/{product} |
+| DET-07 | Table | Info Produk | Tabel: Kategori, Status Stok, Garansi |
+
+---
+
+### UC-05: Mengelola Keranjang Belanja
+
+**Skenario Use Case #5 — Mengelola Keranjang Belanja**
+
+**i. Pre-Condition**
+- Pengguna berada di halaman produk atau detail produk.
+- Session keranjang tersedia.
+
+**ii. Use Case Description**
+
+**a. Primary Flow — Menambah ke Keranjang**
+- Menekan tombol "Tambah ke Cart" pada produk
+- Mengambil data keranjang dari session
+- Jika produk sudah ada, menambah quantity yang sudah ada dengan quantity baru
+- Jika produk belum ada, menyimpan produk dengan quantity baru
+- Menyimpan keranjang yang sudah diperbarui ke session
+- Menampilkan notifikasi "Produk berhasil ditambahkan ke cart"
+- Memperbarui badge cart di navbar
+
+**a. Primary Flow — Melihat Keranjang**
+- Membuka halaman `/cart`
+- Mengambil data keranjang dari session
+- Mengambil data produk dari database
+- Menampilkan daftar item, subtotal per item, dan grand total
+
+**b. Alternative Flow**
+- Menekan tombol (-) hingga quantity menjadi kurang dari 1, produk otomatis dihapus dari keranjang
+- Menekan tombol X pada item untuk menghapus item dari keranjang
+- Membuka halaman cart saat keranjang kosong, menampilkan pesan "Cart masih kosong!" dan tombol untuk lanjut belanja
+
+**iii. Post-Condition**
+- Isi keranjang berubah sesuai aksi yang dilakukan.
+- Badge cart di navbar menampilkan jumlah item terbaru.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-CART | Halaman Keranjang | Daftar item di keranjang belanja |
+
+**v. Tabel Detail Objek UI**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| CART-01 | List | Daftar Item | Gambar, nama, kategori, harga, quantity, subtotal |
+| CART-02 | Button | + | Tambah quantity |
+| CART-03 | Button | - | Kurangi quantity (hapus jika < 1) |
+| CART-04 | Button | X | Hapus item dari cart |
+| CART-05 | Text | Subtotal | Subtotal per item |
+| CART-06 | Text | Grand Total | Total keseluruhan |
+| CART-07 | Button | Checkout | Redirect ke /checkout |
+
+---
+
+### UC-06: Melakukan Checkout
+
+**Skenario Use Case #6 — Melakukan Checkout**
+
+**i. Pre-Condition**
+- Pengguna sudah login ke dalam aplikasi.
+- Keranjang belanja tidak kosong.
+
+**ii. Use Case Description**
+
+**a. Primary Flow**
+- Menekan tombol "Checkout" di halaman cart
+- Memvalidasi bahwa cart tidak kosong
+- Menampilkan form checkout berisi:
+  - Data pengiriman: nama, negara, provinsi, kota, kecamatan, kode pos, alamat, telepon, email
+  - Location picker interaktif berbasis Leaflet.js + OpenStreetMap (cari alamat, drag marker, klik peta, reverse geocode)
+  - Pilihan metode pembayaran: Transfer Bank, E-Wallet, QRIS, COD
+  - Ringkasan pesanan berisi daftar item dan grand total
+- Mengisi data pengiriman, memilih lokasi via peta, memilih metode bayar
+- Menekan tombol "Buat Pesanan"
+- Memvalidasi semua input
+- Membuat Order baru dengan nomor pesanan unik dan status "pending"
+- Membuat OrderItem untuk setiap produk di cart
+- Mengosongkan cart session
+- Mengalihkan ke halaman konfirmasi pembayaran
+
+**b. Alternative Flow**
+- Cart kosong: redirect ke halaman cart dengan pesan "Cart masih kosong!"
+- Validasi input gagal: kembali ke form checkout dengan pesan kesalahan, data yang sudah diisi tetap tersimpan
+- Pengguna belum login: redirect ke halaman login, setelah login kembali ke halaman checkout
+
+**iii. Post-Condition**
+- Pesanan baru tersimpan di database dengan status "pending".
+- Keranjang belanja dikosongkan.
+- Pengguna diarahkan ke halaman konfirmasi pembayaran.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-CHK | Halaman Checkout | Form checkout dengan data pengiriman, location picker, metode bayar |
+
+**v. Tabel Detail Objek UI**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| CHK-01 | Form Group | Data Pengiriman | Input: nama, negara, provinsi, kota, kecamatan, kode pos, alamat, telepon, email |
+| CHK-02 | Component | Location Picker | Peta Leaflet interaktif: search bar, marker drag, reverse geocode |
+| CHK-03 | Radio Group | Metode Pembayaran | 4 opsi: Transfer Bank, E-Wallet, QRIS, COD |
+| CHK-04 | Section | Ringkasan Pesanan | Daftar item + Grand Total |
+| CHK-05 | Button | Buat Pesanan | Submit checkout |
+
+---
+
+### UC-07: Melihat Konfirmasi Pembayaran
+
+**Skenario Use Case #7 — Melihat Konfirmasi Pembayaran**
+
+**i. Pre-Condition**
+- Pesanan sudah berhasil dibuat.
+- Pengguna adalah pemilik pesanan.
+
+**ii. Use Case Description**
+
+**a. Primary Flow**
+- Mengalihkan ke halaman konfirmasi setelah checkout berhasil atau membuka dari link "Lihat Petunjuk Pembayaran" di riwayat pesanan
+- Mengambil data order dan item-itemnya
+- Memvalidasi kepemilikan order
+- Menampilkan nomor pesanan, status pembayaran, daftar item, total pembayaran, alamat pengiriman (dengan link Google Maps jika ada koordinat)
+- Menampilkan instruksi pembayaran sesuai metode yang dipilih:
+  - Transfer Bank: daftar 4 bank (BCA, Mandiri, BRI, BNI) dengan nomor rekening dan tombol "Salin"
+  - E-Wallet: daftar 3 provider (GoPay, OVO, Dana) dengan nomor tujuan
+  - QRIS: gambar QR Code untuk scan
+  - COD: informasi bayar di tempat
+- Menampilkan tombol WhatsApp yang terisi otomatis dengan nomor pesanan untuk konfirmasi
+
+**b. Alternative Flow**
+- Pengguna bukan pemilik order: menampilkan error 403 Forbidden
+- Koordinat lokasi tidak tersedia: alamat ditampilkan tanpa link Google Maps
+
+**iii. Post-Condition**
+- Pengguna melihat instruksi pembayaran.
+- Pengguna dapat mengkonfirmasi pembayaran melalui WhatsApp.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-PAY | Halaman Konfirmasi Pembayaran | Instruksi pembayaran setelah order |
+
+**v. Tabel Detail Objek UI**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| PAY-01 | Text | Nomor Pesanan | Format INV/YYYYMMDD/RANDOM6 |
+| PAY-02 | Badge | Status Pembayaran | Amber (pending), hijau (paid), merah (cancelled) |
+| PAY-03 | List | Item Pesanan | Nama produk × quantity = subtotal |
+| PAY-04 | Text | Total Pembayaran | Grand total |
+| PAY-05 | Section | Alamat Pengiriman | Alamat + link Google Maps |
+| PAY-06 | Dynamic Section | Instruksi Bayar | Konten dinamis sesuai metode bayar |
+| PAY-07 | Button | Konfirmasi via WA | wa.me pre-filled nomor pesanan |
+
+---
+
+### UC-08: Melihat Riwayat Pesanan
+
+**Skenario Use Case #8 — Melihat Riwayat Pesanan**
+
+**i. Pre-Condition**
+- Pengguna sudah login ke dalam aplikasi.
+
+**ii. Use Case Description**
+
+**a. Primary Flow**
+- Membuka halaman `/orders` ("Pesanan Saya")
+- Mengambil semua pesanan milik pengguna dari database
+- Mengurutkan pesanan dari yang terbaru
+- Menampilkan setiap pesanan berisi: nomor pesanan, badge status (color-coded), tanggal pembuatan, daftar item (nama × quantity = subtotal), total harga, dan metode pembayaran
+- Menampilkan link "Lihat Petunjuk Pembayaran" untuk pesanan dengan status pending
+
+**b. Alternative Flow**
+- Belum pernah melakukan pemesanan: menampilkan daftar kosong
+
+**iii. Post-Condition**
+- Daftar semua pesanan milik pengguna ditampilkan.
+- Pengguna dapat melihat detail pesanan atau melanjutkan pembayaran.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-ORD | Halaman Pesanan Saya | Daftar semua pesanan customer |
+
+**v. Tabel Detail Objek UI**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| ORD-01 | List | Daftar Pesanan | Diurutkan dari terbaru |
+| ORD-02 | Badge | Status | Color-coded: amber, green, red |
+| ORD-03 | Text | Tanggal | Tanggal pembuatan pesanan |
+| ORD-04 | List | Items per Pesanan | Nama × quantity = subtotal |
+| ORD-05 | Text | Total | Total harga |
+| ORD-06 | Text | Metode Bayar | Transfer Bank / E-Wallet / QRIS / COD |
+| ORD-07 | Link | Lihat Petunjuk Pembayaran | Muncul hanya untuk status pending |
+
+---
+
+### UC-09: Login & Dashboard Admin
+
+**Skenario Use Case #9 — Login & Dashboard Admin**
+
+**i. Pre-Condition**
+- Admin memiliki akun dengan hak akses `is_admin = true`.
+- Admin membuka halaman `/admin/login`.
+
+**ii. Use Case Description**
+
+**a. Primary Flow**
+- Membuka halaman `/admin/login`
+- Menampilkan form login admin (email dan password)
+- Memasukkan email dan password admin
+- Menekan tombol "Login"
+- Memvalidasi kredensial login
+- Mengecek flag `is_admin` pada data pengguna
+- Mengalihkan ke halaman dashboard admin
+- Menampilkan kartu statistik: total produk, total kategori, jumlah best seller, jumlah new arrival
+- Menampilkan bar chart "Produk per Kategori"
+
+**b. Alternative Flow**
+- Email atau password salah: menampilkan pesan "Email atau password salah" dan tetap di halaman login
+- Pengguna bukan admin (`is_admin = false`): logout otomatis dan menampilkan pesan "Anda tidak memiliki akses admin"
+- Sudah login sebagai admin: langsung mengalihkan ke dashboard tanpa menampilkan form login
+
+**iii. Post-Condition**
+- Admin berhasil login dan berada di halaman dashboard.
+- Admin dapat mengakses menu manajemen produk.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-ALOG | Halaman Login Admin | Form login khusus admin |
+| SCR-DASH | Halaman Dashboard Admin | Statistik toko |
+
+**v. Tabel Detail Objek UI — Login Admin**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| ALOG-01 | Input Email | Email | Wajib diisi |
+| ALOG-02 | Input Password | Password | Wajib diisi |
+| ALOG-03 | Button | Login | Tombol submit untuk login admin |
+
+**v. Tabel Detail Objek UI — Dashboard**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| DASH-01 | Card | Total Produk | Menampilkan jumlah produk |
+| DASH-02 | Card | Total Kategori | Menampilkan jumlah kategori |
+| DASH-03 | Card | Best Seller | Menampilkan jumlah produk best seller |
+| DASH-04 | Card | New Arrival | Menampilkan jumlah produk new arrival |
+| DASH-05 | Chart | Produk per Kategori | Bar chart dengan lebar proporsional |
+
+---
+
+### UC-10: Mengelola Produk
+
+**Skenario Use Case #10 — Mengelola Produk**
+
+**i. Pre-Condition**
+- Admin sudah login ke panel admin.
+- Data kategori sudah tersedia.
+
+**ii. Use Case Description**
+
+**a. Primary Flow — Melihat Daftar Produk**
+- Membuka menu Produk
+- Menampilkan tabel daftar produk berisi thumbnail, nama, kategori badge, harga, status, dan tombol aksi
+
+**a. Primary Flow — Menambah Produk**
+- Menekan tombol "Tambah Produk"
+- Menampilkan form berisi nama, deskripsi, harga, kategori (dropdown), gambar (upload), checkbox best seller & new arrival
+- Mengisi data dan upload gambar
+- Menekan tombol "Simpan"
+- Memvalidasi input
+- Menyimpan file gambar ke storage
+- Menambahkan data produk baru ke database
+- Mengalihkan ke halaman daftar produk dengan notifikasi sukses
+
+**a. Primary Flow — Mengedit Produk**
+- Menekan tombol edit pada produk
+- Menampilkan form pre-filled dengan data produk
+- Mengubah data (gambar opsional)
+- Menekan tombol "Simpan"
+- Jika upload gambar baru, menghapus gambar lama dan menyimpan gambar baru
+- Mengalihkan ke halaman daftar produk dengan notifikasi sukses
+
+**a. Primary Flow — Menghapus Produk**
+- Menekan tombol hapus pada produk
+- Mengkonfirmasi penghapusan melalui dialog
+- Menghapus file gambar dari storage
+- Menghapus data produk dari database
+- Mengalihkan ke halaman daftar produk dengan notifikasi sukses
+
+**b. Alternative Flow**
+- Validasi gagal (gambar > 2MB, format tidak sesuai, field kosong): kembali ke form dengan pesan kesalahan
+- Hapus dibatalkan: dialog konfirmasi ditutup, tidak ada perubahan data
+
+**iii. Post-Condition**
+- Data produk berubah sesuai operasi yang dilakukan (tambah/ubah/hapus).
+- Daftar produk menampilkan data terbaru.
+
+**iv. Tabel Deskripsi Layar**
+
+| ID Layar | Nama Layar | Deskripsi |
+|----------|-----------|-----------|
+| SCR-APC | Halaman Tambah Produk | Form tambah produk baru |
+| SCR-APE | Halaman Edit Produk | Form edit produk |
+| SCR-APR | Halaman Daftar Produk | Tabel daftar produk (admin) |
+
+**v. Tabel Detail Objek UI — Tambah Produk**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| APC-01 | Input Text | Nama Produk | Wajib diisi, maksimal 255 karakter |
+| APC-02 | Textarea | Deskripsi | Wajib diisi |
+| APC-03 | Input Number | Harga | Wajib diisi, numeric, minimal 0 |
+| APC-04 | Dropdown | Kategori | Wajib diisi, pilihan dari tabel categories |
+| APC-05 | File | Gambar | Wajib diisi, image, format jpeg/png/jpg/gif/webp, maksimal 2MB |
+| APC-06 | Checkbox | Best Seller | Opsional, flag produk best seller |
+| APC-07 | Checkbox | New Arrival | Opsional, flag produk new arrival |
+| APC-08 | Button | Simpan | Tombol submit |
+
+**v. Tabel Detail Objek UI — Daftar Produk**
+
+| Id_Objek | Jenis | Label | Keterangan |
+|----------|-------|-------|------------|
+| APR-01 | Table | Tabel Produk | Thumbnail, nama, kategori badge, harga, status |
+| APR-02 | Button | Edit | Tautan ke halaman edit produk |
+| APR-03 | Button | Hapus | Tombol hapus dengan konfirmasi dialog |
+
+---
+
+## B5. Untuk SETIAP Use Case — Data Sequence Diagram
 
 ### UC-01: Registrasi Akun
 
@@ -482,229 +1021,6 @@ end
 
 ---
 
-## B5. Untuk SETIAP Use Case — Deskripsi Halaman UI
-
-### UC-01: Registrasi Akun
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-REG | Halaman Registrasi | Form untuk mendaftar akun customer baru |
-
-**Tabel Detail Objek:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| REG-01 | Input Text | Nama Lengkap | Required, max:255 |
-| REG-02 | Input Email | Email | Required, unique |
-| REG-03 | Input Password | Password | Required, min:8 |
-| REG-04 | Input Password | Konfirmasi Password | Required, must match |
-| REG-05 | Button | Daftar | Submit form, POST /register |
-| REG-06 | Link | Sudah punya akun? Login | Redirect ke /login |
-
-### UC-02: Login Akun
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-LOG | Halaman Login | Form login untuk customer |
-
-**Tabel Detail Objek:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| LOG-01 | Input Email | Email | Required |
-| LOG-02 | Input Password | Password | Required |
-| LOG-03 | Checkbox | Ingat Saya | Remember me token |
-| LOG-04 | Button | Login | Submit form, POST /login |
-| LOG-05 | Link | Belum punya akun? Daftar | Redirect ke /register |
-
-### UC-03: Melihat & Menyaring Produk
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-HOME | Halaman Beranda | Halaman utama aplikasi dengan hero, best seller, kategori, new arrival |
-| SCR-PROD | Halaman Katalog Produk | Grid produk dengan pill filter kategori |
-
-**Tabel Detail Objek — Beranda:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| HOME-01 | Section | Hero | Banner promosi utama dengan headline branding |
-| HOME-02 | Grid | Best Seller | 4 kartu produk best seller |
-| HOME-03 | Card | Kategori | 2 kartu kategori (Vape & Liquid) dengan link filter |
-| HOME-04 | Grid | New Arrival | 4 kartu produk baru dengan badge "BARU" |
-
-**Tabel Detail Objek — Katalog:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| PROD-01 | Pill Group | Filter Kategori | "Semua", "Vape", "Liquid" — klik untuk filter |
-| PROD-02 | Grid | Grid Produk | Responsive 1-4 kolom |
-| PROD-03 | Card | Kartu Produk | Gambar, nama, kategori badge, harga, tombol "Tambah ke Cart" |
-
-### UC-04: Melihat Detail Produk
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-DET | Halaman Detail Produk | Informasi lengkap satu produk |
-
-**Tabel Detail Objek:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| DET-01 | Breadcrumb | Navigasi | Beranda > Produk > Nama Produk |
-| DET-02 | Image | Gambar Produk | Efek hover zoom |
-| DET-03 | Badge | Badge Status | Badge kategori, "Best Seller", "BARU" |
-| DET-04 | Text | Harga | Format Rp |
-| DET-05 | Selector | Quantity | Tombol - / input number / +, minimal 1 |
-| DET-06 | Button | Tambah ke Cart | POST /cart/add/{product} |
-| DET-07 | Table | Info Produk | Tabel: Kategori, Status Stok, Garansi |
-
-### UC-05: Mengelola Keranjang Belanja
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-CART | Halaman Keranjang | Daftar item di keranjang belanja |
-
-**Tabel Detail Objek:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| CART-01 | List | Daftar Item | Gambar, nama, kategori, harga, quantity, subtotal |
-| CART-02 | Button | + | Tambah quantity |
-| CART-03 | Button | - | Kurangi quantity (hapus jika < 1) |
-| CART-04 | Button | X | Hapus item dari cart |
-| CART-05 | Text | Subtotal | Subtotal per item |
-| CART-06 | Text | Grand Total | Total keseluruhan |
-| CART-07 | Button | Checkout | Redirect ke /checkout |
-
-### UC-06: Melakukan Checkout
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-CHK | Halaman Checkout | Form checkout dengan data pengiriman, location picker, metode bayar |
-
-**Tabel Detail Objek:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| CHK-01 | Form Group | Data Pengiriman | Input: nama, negara, provinsi, kota, kecamatan, kode pos, alamat, telepon, email |
-| CHK-02 | Component | Location Picker | Peta Leaflet interaktif: search bar, marker drag, reverse geocode |
-| CHK-03 | Radio Group | Metode Pembayaran | 4 opsi: Transfer Bank, E-Wallet, QRIS, COD |
-| CHK-04 | Section | Ringkasan Pesanan | Daftar item + Grand Total |
-| CHK-05 | Button | Buat Pesanan | Submit checkout |
-
-### UC-07: Melihat Konfirmasi Pembayaran
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-PAY | Halaman Konfirmasi Pembayaran | Instruksi pembayaran setelah order |
-
-**Tabel Detail Objek:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| PAY-01 | Text | Nomor Pesanan | Format INV/YYYYMMDD/RANDOM6 |
-| PAY-02 | Badge | Status Pembayaran | Amber (pending), hijau (paid), merah (cancelled) |
-| PAY-03 | List | Item Pesanan | Nama produk × quantity = subtotal |
-| PAY-04 | Text | Total Pembayaran | Grand total |
-| PAY-05 | Section | Alamat Pengiriman | Alamat + link Google Maps |
-| PAY-06 | Dynamic Section | Instruksi Bayar | Konten dinamis sesuai metode bayar |
-| PAY-07 | Button | Konfirmasi via WA | wa.me pre-filled nomor pesanan |
-
-### UC-08: Melihat Riwayat Pesanan
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-ORD | Halaman Pesanan Saya | Daftar semua pesanan customer |
-
-**Tabel Detail Objek:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| ORD-01 | List | Daftar Pesanan | Diurutkan dari terbaru |
-| ORD-02 | Badge | Status | Color-coded: amber, green, red |
-| ORD-03 | Text | Tanggal | Tanggal pembuatan pesanan |
-| ORD-04 | List | Items per Pesanan | Nama × quantity = subtotal |
-| ORD-05 | Text | Total | Total harga |
-| ORD-06 | Text | Metode Bayar | Transfer Bank / E-Wallet / QRIS / COD |
-| ORD-07 | Link | Lihat Petunjuk Pembayaran | Muncul hanya untuk status pending |
-
-### UC-09: Login & Dashboard Admin
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-ALOG | Halaman Login Admin | Form login khusus admin |
-| SCR-DASH | Halaman Dashboard Admin | Statistik toko |
-
-**Tabel Detail Objek — Login Admin:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| ALOG-01 | Input Email | Email | Required |
-| ALOG-02 | Input Password | Password | Required |
-| ALOG-03 | Button | Login | Submit, POST /admin/login |
-
-**Tabel Detail Objek — Dashboard:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| DASH-01 | Card | Total Produk | Angka jumlah produk |
-| DASH-02 | Card | Total Kategori | Angka jumlah kategori |
-| DASH-03 | Card | Best Seller | Angka produk best seller |
-| DASH-04 | Card | New Arrival | Angka produk new arrival |
-| DASH-05 | Chart | Produk per Kategori | Bar chart dengan lebar proporsional |
-
-### UC-10: Mengelola Produk
-
-**Tabel ID Layar:**
-
-| ID Layar | Nama Layar | Deskripsi |
-|----------|-----------|-----------|
-| SCR-APR | Halaman Daftar Produk | Tabel daftar produk (admin) |
-| SCR-APC | Halaman Tambah Produk | Form tambah produk baru |
-| SCR-APE | Halaman Edit Produk | Form edit produk |
-
-**Tabel Detail Objek — Tambah Produk:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| APC-01 | Input Text | Nama Produk | Required, max:255 |
-| APC-02 | Textarea | Deskripsi | Required |
-| APC-03 | Input Number | Harga | Required, numeric, min:0 |
-| APC-04 | Dropdown | Kategori | Required, dari tabel categories |
-| APC-05 | File | Gambar | Required (create), image, max 2MB |
-| APC-06 | Checkbox | Best Seller | Boolean |
-| APC-07 | Checkbox | New Arrival | Boolean |
-| APC-08 | Button | Simpan | Submit form |
-
-**Tabel Detail Objek — Daftar Produk:**
-
-| Id_Objek | Jenis | Label | Keterangan |
-|----------|-------|-------|------------|
-| APR-01 | Table | Tabel Produk | Thumbnail, nama, kategori badge, harga, status |
-| APR-02 | Button | Edit | Link ke /admin/products/{id}/edit |
-| APR-03 | Button | Hapus | Konfirmasi dialog, DELETE |
-
----
-
 ## B6. Diagram Kelas Keseluruhan (Perancangan)
 
 ### Kelas Entity (Model)
@@ -756,11 +1072,11 @@ end
 +-----------+        +----------+        +-------------+        +-----------+
 |   User    |──1:N──▶|  Order   |──1:N──▶|  OrderItem  |──N:1──▶|  Product  |
 +-----------+        +----------+        +-------------+        +-----------+
-                                                                    |  N:1
-                                                                    ▼
-                                                               +----------+
-                                                               | Category |
-                                                               +----------+
+                                                                     |  N:1
+                                                                     ▼
+                                                                +----------+
+                                                                | Category |
+                                                                +----------+
 ```
 
 ---
