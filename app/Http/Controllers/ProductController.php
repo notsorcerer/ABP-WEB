@@ -19,11 +19,19 @@ class ProductController extends Controller
             }
         }
 
+        $search = request('search');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
         $products = $query->get();
         $categories = Category::all();
         $selectedCategory = $slug ?? 'all';
 
-        return view('products', compact('products', 'categories', 'selectedCategory'));
+        return view('products', compact('products', 'categories', 'selectedCategory', 'search'));
     }
 
     public function show(Product $product)

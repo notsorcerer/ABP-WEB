@@ -32,6 +32,14 @@
                     <a href="{{ route('products.index') }}" class="text-sm font-medium text-accent/70 hover:text-primary transition-colors duration-200 {{ request()->routeIs('products.*') ? 'text-primary' : '' }}">
                         Produk
                     </a>
+                    <form action="{{ route('products.index') }}" method="GET" class="relative">
+                        <input type="text" name="search" placeholder="Cari produk..."
+                               class="w-44 lg:w-52 pl-9 pr-3 py-1.5 text-sm bg-gray-100 rounded-full border border-transparent focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                               value="{{ request('search') }}">
+                        <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </form>
                     <a href="{{ route('cart.index') }}" class="relative text-sm font-medium text-accent/70 hover:text-primary transition-colors duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
@@ -106,6 +114,14 @@
 
             <div id="mobile-menu" class="hidden md:hidden pb-4 border-t border-gray-100 pt-4">
                 <div class="flex flex-col gap-3">
+                    <form action="{{ route('products.index') }}" method="GET" class="relative">
+                        <input type="text" name="search" placeholder="Cari produk..."
+                               class="w-full pl-9 pr-3 py-2 text-sm bg-gray-100 rounded-full border border-transparent focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                               value="{{ request('search') }}">
+                        <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </form>
                     <a href="{{ route('home') }}" class="text-sm font-medium text-accent/70 hover:text-primary transition-colors duration-200 {{ request()->routeIs('home') ? 'text-primary' : '' }}">Beranda</a>
                     <a href="{{ route('products.index') }}" class="text-sm font-medium text-accent/70 hover:text-primary transition-colors duration-200 {{ request()->routeIs('products.*') ? 'text-primary' : '' }}">Produk</a>
                     @auth
