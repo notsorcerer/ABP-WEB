@@ -18,7 +18,7 @@ Aplikasi e-commerce untuk liquid dan vape berbasis Laravel 13 dengan fitur locat
 
 ```bash
 git clone https://github.com/notsorcerer/ABP-WEB.git
-cd liquidpedia
+cd ABP-WEB
 ```
 
 ### 2. Install Dependency
@@ -55,6 +55,12 @@ php artisan key:generate
 ```
 
 ### 5. Setup Database
+
+Buat database MySQL terlebih dahulu, misal melalui phpMyAdmin atau command line:
+
+```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS liquidpedia"
+```
 
 **Migrate + Seed:**
 
