@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
+use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
@@ -126,6 +127,32 @@ class OrderController extends Controller
                 'payment_instructions' => $paymentInstructions,
             ],
         ], 201);
+    }
+
+    public function cancel(Request $request, Order $order): JsonResponse
+    {
+        if ($order->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pesanan tidak ditemukan',
+            ], 403);
+        }
+
+        if ($order->payment_status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya pesanan dengan status pending yang bisa dibatalkan',
+            ], 400);
+        }
+
+        $order->update(['payment_status' => 'cancelled']);
+        $order->load('items');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pesanan berhasil dibatalkan',
+            'data' => new OrderResource($order),
+        ]);
     }
 
     public function paymentConfirmation(Request $request, Order $order): JsonResponse

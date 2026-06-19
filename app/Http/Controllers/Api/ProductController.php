@@ -22,6 +22,10 @@ class ProductController extends Controller
             }
         }
 
+        if ($search = $request->query('search')) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
         $perPage = min((int) $request->query('per_page', 10), 50);
         $products = $query->latest()->paginate($perPage);
 

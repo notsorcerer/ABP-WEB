@@ -154,10 +154,10 @@ Kolom koordinat: `shipping_latitude` & `shipping_longitude` (string, nullable) d
 - Konfirmasi pesanan via WhatsApp
 
 ### Admin Panel (`/admin/login`)
-- Dashboard
+- Dashboard (statistik penjualan)
 - CRUD Produk (termasuk upload gambar lokal)
 - CRUD Kategori
-- Manajemen Pesanan (status pembayaran)
+- Manajemen Pesanan (update status pembayaran)
 
 ### Auth
 - Register / Login customer
@@ -166,10 +166,10 @@ Kolom koordinat: `shipping_latitude` & `shipping_longitude` (string, nullable) d
 
 ### REST API (`/api/`)
 - **Autentikasi token** menggunakan Laravel Sanctum
-- 16 endpoint RESTful: produk, kategori, cart, orders, auth
+- **20 endpoint** RESTful: produk, kategori, cart, orders, auth, admin
 - Cart berbasis database (bukan session) — siap untuk mobile app
 - Format response JSON konsisten (`success`, `message`, `data`, `meta`)
-- **16 endpoint** lengkap untuk mendukung aplikasi mobile (Flutter)
+- Admin API endpoints untuk mendukung Flutter Admin Panel
 
 | Method | Endpoint | Auth | Fungsi |
 |--------|----------|------|--------|
@@ -189,6 +189,21 @@ Kolom koordinat: `shipping_latitude` & `shipping_longitude` (string, nullable) d
 | `GET` | `/api/orders` | ✅ | Riwayat pesanan |
 | `GET` | `/api/orders/{id}` | ✅ | Detail pesanan |
 | `GET` | `/api/orders/{id}/payment` | ✅ | Instruksi pembayaran |
+| `PUT` | `/api/orders/{order}/cancel` | ✅ | Batalkan pesanan (status pending) |
+| | | | |
+| **Admin Endpoints** | | | |
+| `GET` | `/api/admin/dashboard` | ✅ | Statistik dashboard |
+| `GET` | `/api/admin/products` | ✅ | List produk (admin) |
+| `POST` | `/api/admin/products` | ✅ | Tambah produk + gambar |
+| `PUT` | `/api/admin/products/{id}` | ✅ | Edit produk + gambar |
+| `DELETE` | `/api/admin/products/{id}` | ✅ | Hapus produk |
+| `GET` | `/api/admin/categories` | ✅ | List kategori (admin) |
+| `POST` | `/api/admin/categories` | ✅ | Tambah kategori |
+| `PUT` | `/api/admin/categories/{id}` | ✅ | Edit kategori |
+| `DELETE` | `/api/admin/categories/{id}` | ✅ | Hapus kategori |
+| `GET` | `/api/admin/orders` | ✅ | List semua pesanan |
+| `GET` | `/api/admin/orders/{id}` | ✅ | Detail pesanan (admin) |
+| `PUT` | `/api/admin/orders/{id}/payment` | ✅ | Update status pembayaran |
 
 ---
 
@@ -216,5 +231,7 @@ Kolom koordinat: `shipping_latitude` & `shipping_longitude` (string, nullable) d
 - Produk image: support URL eksternal dan upload lokal ke `storage/app/public/products/`
 - WhatsApp: nomor admin `082191488380` (floating button di semua halaman)
 - API Auth: Laravel Sanctum (token-based, pakai `auth:sanctum` middleware)
+- CORS: dikonfigurasi manual via `bootstrap/app.php` (Laravel 11+)
 - File Postman: `LiquidPedia-API.postman_collection.json` (import ke Postman untuk testing API)
 - Dokumentasi lengkap: lihat `Documentation.md`
+- **APP_URL** di `.env` harus diset sesuai IP laptop agar gambar bisa diakses dari HP fisik
