@@ -29,7 +29,7 @@ class Product extends Model
             return $this->image;
         }
 
-        return Storage::url($this->image);
+        return Storage::disk('public')->url($this->image);
     }
 
     protected function casts(): array
