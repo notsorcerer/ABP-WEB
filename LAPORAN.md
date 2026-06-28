@@ -199,6 +199,11 @@ Tailwind CSS adalah utility-first CSS framework yang menyediakan class-class sia
 
 Customer dapat mendaftar akun baru atau login ke akun yang sudah ada. Fitur ini tersedia di web dan mobile. Web menggunakan session-based authentication, sedangkan mobile menggunakan token-based authentication via Laravel Sanctum. Setelah login, customer dapat mengakses fitur checkout, riwayat pesanan, dan profil.
 
+<!-- SCREENSHOT: Halaman Login Web -->
+<!-- SCREENSHOT: Halaman Registrasi Web -->
+<!-- SCREENSHOT: Halaman Login Mobile -->
+<!-- SCREENSHOT: Halaman Registrasi Mobile -->
+
 ### 3.1.2 Beranda (Home)
 
 Halaman beranda menampilkan:
@@ -210,6 +215,9 @@ Halaman beranda menampilkan:
 
 Di mobile, terdapat tambahan cart badge pada AppBar yang menampilkan jumlah item di keranjang secara real-time, serta entry animations (fade-in dan slide) pada setiap section.
 
+<!-- SCREENSHOT: Halaman Beranda Web -->
+<!-- SCREENSHOT: Halaman Beranda Mobile -->
+
 ### 3.1.3 Katalog Produk
 
 Katalog produk ditampilkan dalam bentuk grid. Customer dapat:
@@ -217,6 +225,9 @@ Katalog produk ditampilkan dalam bentuk grid. Customer dapat:
 - Memfilter produk berdasarkan kategori (Vape / Liquid)
 - Mencari produk berdasarkan nama (mobile: search dengan debounce 500ms)
 - Melakukan scroll pagination (mobile: infinite scroll)
+
+<!-- SCREENSHOT: Katalog Produk Web -->
+<!-- SCREENSHOT: Katalog Produk Mobile (dengan search) -->
 
 ### 3.1.4 Detail Produk
 
@@ -229,6 +240,9 @@ Halaman detail produk menampilkan informasi lengkap:
 - Quantity selector (+/-) dengan validasi minimal 1
 - Tombol "Add to Cart"
 
+<!-- SCREENSHOT: Detail Produk Web -->
+<!-- SCREENSHOT: Detail Produk Mobile -->
+
 ### 3.1.5 Keranjang Belanja (Cart)
 
 Customer dapat mengelola keranjang belanja:
@@ -239,6 +253,9 @@ Customer dapat mengelola keranjang belanja:
 - Melihat subtotal per item dan grand total
 
 Di web, cart berbasis session (tidak perlu login untuk menambahkan). Di mobile, cart berbasis database (harus login).
+
+<!-- SCREENSHOT: Keranjang Belanja Web -->
+<!-- SCREENSHOT: Keranjang Belanja Mobile -->
 
 ### 3.1.6 Checkout dengan Location Picker
 
@@ -253,6 +270,11 @@ Proses checkout mencakup:
 - Reverse geocoding (menampilkan alamat dari koordinat)
 - Deteksi lokasi otomatis (web: browser geolocation, mobile: tombol pusatkan)
 
+<!-- SCREENSHOT: Checkout Web (form + location picker) -->
+<!-- SCREENSHOT: Checkout Mobile (form + location picker) -->
+<!-- SCREENSHOT: Location Picker Web (Leaflet.js) -->
+<!-- SCREENSHOT: Location Picker Mobile (flutter_map) -->
+
 Metode pembayaran yang tersedia: Transfer Bank (BCA, Mandiri, BRI, BNI), E-Wallet (GoPay, OVO, Dana), QRIS, dan COD.
 
 ### 3.1.7 Konfirmasi Pembayaran
@@ -266,11 +288,18 @@ Setelah pesanan berhasil dibuat, customer diarahkan ke halaman konfirmasi yang m
 - Instruksi pembayaran sesuai metode yang dipilih
 - Tombol WhatsApp untuk konfirmasi (pre-filled dengan nomor pesanan)
 
+<!-- SCREENSHOT: Konfirmasi Pembayaran Web -->
+<!-- SCREENSHOT: Konfirmasi Pembayaran Mobile (dengan copy-to-clipboard) -->
+
 Di mobile, nomor rekening dan e-wallet bisa di-copy ke clipboard dengan sekali tap.
 
 ### 3.1.8 Riwayat Pesanan
 
 Customer dapat melihat semua pesanan yang pernah dibuat, diurutkan dari yang terbaru. Setiap pesanan menampilkan nomor pesanan, status badge (color-coded), tanggal, daftar item, total, dan metode pembayaran. Untuk pesanan dengan status pending, tersedia tombol "Lihat Petunjuk Pembayaran" dan "Batalkan Pesanan".
+
+<!-- SCREENSHOT: Riwayat Pesanan Web -->
+<!-- SCREENSHOT: Riwayat Pesanan Mobile -->
+<!-- SCREENSHOT: Detail Pesanan Mobile -->
 
 ### 3.1.9 Cancel Order
 
@@ -280,11 +309,17 @@ Customer dapat membatalkan pesanan selama statusnya masih "pending" (Menunggu Pe
 
 Halaman profil menampilkan informasi akun customer (nama, email, avatar inisial) dan menyediakan tautan ke riwayat pesanan dan logout.
 
+<!-- SCREENSHOT: Halaman Profil Web -->
+<!-- SCREENSHOT: Halaman Profil Mobile (dengan menu Admin Panel) -->
+
 ## 3.2 Fitur untuk Admin
 
 ### 3.2.1 Dashboard
 
 Dashboard admin menampilkan statistik toko: total produk, total kategori, jumlah best seller, jumlah new arrival, dan jumlah produk per kategori.
+
+<!-- SCREENSHOT: Admin Dashboard Web -->
+<!-- SCREENSHOT: Admin Dashboard Mobile -->
 
 ### 3.2.2 Manajemen Produk (CRUD)
 
@@ -294,6 +329,11 @@ Admin dapat mengelola produk melalui:
 - **Edit produk**: form pre-filled, gambar opsional
 - **Hapus produk**: dengan konfirmasi, gambar ikut terhapus
 
+<!-- SCREENSHOT: Admin Produk List Web -->
+<!-- SCREENSHOT: Admin Produk Form Web (tambah/edit) -->
+<!-- SCREENSHOT: Admin Produk List Mobile -->
+<!-- SCREENSHOT: Admin Produk Form Mobile -->
+
 ### 3.2.3 Manajemen Kategori (CRUD)
 
 Admin dapat mengelola kategori melalui:
@@ -302,9 +342,15 @@ Admin dapat mengelola kategori melalui:
 - **Edit kategori**: ubah nama
 - **Hapus kategori**: dicegah jika kategori masih memiliki produk
 
+<!-- SCREENSHOT: Admin Kategori Web (list + form) -->
+<!-- SCREENSHOT: Admin Kategori Mobile -->
+
 ### 3.2.4 Manajemen Pesanan
 
 Admin dapat melihat semua pesanan, memfilter berdasarkan status pembayaran, dan memperbarui status pembayaran (menandai lunas atau membatalkan).
+
+<!-- SCREENSHOT: Admin Pesanan Web -->
+<!-- SCREENSHOT: Admin Pesanan Mobile -->
 
 ## 3.3 Perbandingan Platform Web & Mobile
 
