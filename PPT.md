@@ -13,8 +13,6 @@
 | **Platform** | Web (Laravel) + Mobile (Flutter) |
 | **Mata Kuliah** | Analisis dan Perancangan Perangkat Lunak |
 | **Nama / NIM** | [ISI NAMA DAN NIM] |
-| **Kelas** | [ISI KELAS] |
-| **Logo** | Logo LiquidPedia (lingkaran merah dengan "L") / icon cart + vape |
 
 **Desain:** Background merah marun (#8E1616) atau hitam (#1D1616), teks putih.
 
@@ -25,13 +23,17 @@
 1. Latar Belakang
 2. Rumusan Masalah & Tujuan
 3. Landasan Teori
-4. Analisis & Perancangan
-5. Hasil Implementasi — Web
-6. Hasil Implementasi — Mobile
-7. Fitur Unggulan
-8. REST API
-9. Hasil Pengujian
-10. Kesimpulan & Saran
+4. Arsitektur Sistem
+5. Struktur Database
+6. Fitur Customer
+7. Fitur Admin
+8. Perbandingan Platform
+9. REST API
+10. Fitur Unggulan
+11. Hasil Implementasi — Web
+12. Hasil Implementasi — Mobile
+13. Hasil Pengujian
+14. Kesimpulan & Saran
 
 **Desain:** Dua kolom, background gradien merah.
 
@@ -54,12 +56,14 @@
 **Rumusan Masalah:**
 1. Bagaimana merancang platform e-commerce khusus liquid & vape untuk web dan mobile?
 2. Bagaimana mengintegrasikan mobile dengan backend Laravel via REST API?
-3. Bagaimana menyediakan panel admin yang dapat diakses dari web dan mobile?
+3. Bagaimana mengimplementasikan fitur location picker berbasis OpenStreetMap di web & mobile?
+4. Bagaimana menyediakan panel admin yang dapat diakses dari web dan mobile?
 
 **Tujuan:**
 1. Menghasilkan platform e-commerce web + mobile yang fungsional
 2. Mengimplementasikan REST API dengan Laravel Sanctum
-3. Menyediakan panel administrasi untuk web dan mobile
+3. Menyediakan location picker (Leaflet.js + flutter_map)
+4. Menyediakan panel administrasi untuk web dan mobile
 
 **Desain:** Dua kolom (kiri: masalah, kanan: tujuan), icon panah.
 
@@ -79,19 +83,7 @@
 
 ---
 
-## SLIDE 6 — USE CASE DIAGRAM
-
-**Aktor 1:** **Customer** (kiri)  **10 use case:** Registrasi, Login, Lihat Produk, Detail Produk, Search Produk, Kelola Cart, Checkout + Location Picker, Konfirmasi Bayar, Cancel Order, Riwayat Pesanan
-
-**Aktor 2:** **Admin** (kanan)  **4 use case:** Login & Dashboard, Kelola Produk, Kelola Kategori, Kelola Pesanan
-
-**System boundary:** LiquidPedia
-
-**Catatan Gambar:** Buat diagram di Canva (ellipse = use case, stick figure = aktor, rectangle = system boundary).
-
----
-
-## SLIDE 7 — ARSITEKTUR SISTEM
+## SLIDE 6 — ARSITEKTUR SISTEM
 
 Buat diagram layer:
 
@@ -116,143 +108,209 @@ Buat diagram layer:
 
 ---
 
-## SLIDE 8 — ENTITY RELATIONSHIP DIAGRAM (ERD)
+## SLIDE 7 — STRUKTUR DATABASE
 
-| Tabel | Primary Key | Foreign Key |
-|-------|-------------|-------------|
-| **users** | id | - |
-| **categories** | id | - |
-| **products** | id | category_id |
-| **orders** | id | user_id |
-| **order_items** | id | order_id, product_id |
-| **cart_items** | id | user_id, product_id |
+| Tabel | Kolom Penting | Relasi |
+|-------|--------------|--------|
+| **users** | id, name, email, password, is_admin | hasMany orders, hasMany cart_items |
+| **categories** | id, name, slug (unique) | hasMany products |
+| **products** | id, name, description, price, category_id, image, is_best_seller, is_new_arrival | belongsTo category |
+| **orders** | id, user_id, order_number (unique), payment_method, payment_status, total | belongsTo user, hasMany order_items |
+| **order_items** | id, order_id, product_id, product_name, quantity, price, subtotal | belongsTo order, belongsTo product |
+| **cart_items** | id, user_id, product_id, quantity (unique) | belongsTo user, belongsTo product |
 
-**Relasi:** users 1:N orders, orders 1:N order_items, products 1:N order_items, users 1:N cart_items, products 1:N cart_items, categories 1:N products
+**Format Order Number:** `INV/YYYYMMDD/RANDOM6`
 
 ---
 
-## SLIDE 9 — FITUR UNGGULAN
+## SLIDE 8 — FITUR CUSTOMER
+
+| Fitur | Deskripsi |
+|-------|-----------|
+| **Registrasi & Login** | Session-based (web) atau token-based Sanctum (mobile) |
+| **Beranda** | Hero banner, Best Seller, kategori, New Arrival, cart badge |
+| **Katalog Produk** | Grid + filter kategori + search debounce + infinite scroll |
+| **Detail Produk** | Gambar, info tabel, quantity selector, Add to Cart |
+| **Keranjang Belanja** | Tambah/ubah/hapus item, subtotal, grand total |
+| **Checkout + Location Picker** | Form pengiriman + peta OpenStreetMap interaktif |
+| **Konfirmasi Pembayaran** | Invoice, instruksi bayar, tombol WA, copy-to-clipboard |
+| **Riwayat Pesanan** | Daftar pesanan, status badge, cancel order |
+| **Profil** | Info akun, tautan pesanan & logout |
+
+**Desain:** Tabel atau list dengan icon per fitur.
+
+---
+
+## SLIDE 9 — FITUR ADMIN
+
+| Fitur | Deskripsi |
+|-------|-----------|
+| **Dashboard** | Statistik toko (total produk/kategori, best seller, new arrival) |
+| **Manajemen Produk** | CRUD + upload gambar + toggle best seller/new arrival |
+| **Manajemen Kategori** | CRUD + proteksi hapus jika masih punya produk |
+| **Manajemen Pesanan** | Lihat/filter/update status pembayaran |
+
+**Desain:** Grid 2x2 dengan icon.
+
+---
+
+## SLIDE 10 — PERBANDINGAN PLATFORM
+
+| Fitur | Web | Mobile |
+|-------|-----|--------|
+| Autentikasi | Session-based | Token-based (Sanctum) |
+| Cart | Session (tanpa login) | Database (harus login) |
+| Search | Filter kategori | Debounce 500ms |
+| Location Picker | Leaflet.js | flutter_map |
+| Cart Badge | Badge navbar | Badge real-time dari API |
+| Admin Panel | Blade views | Flutter screens |
+| Animasi | Hover CSS | Fade-in + SlideTransition |
+| Payment Copy | Manual select + copy | Tap to copy (clipboard) |
+| Pagination | Page load | Infinite scroll |
+| Cancel Order | URL konfirmasi | Dialog + API call |
+
+---
+
+## SLIDE 11 — REST API ENDPOINTS
+
+**27 endpoint dalam 3 kategori:**
+
+**Public (tanpa token):**
+| Method | Endpoint |
+|--------|----------|
+| POST | /api/auth/register |
+| POST | /api/auth/login |
+| GET | /api/products, /products/home, /products/{id} |
+| GET | /api/categories |
+
+**Protected (Sanctum):**
+| Method | Endpoint |
+|--------|----------|
+| POST | /api/auth/logout |
+| GET | /api/auth/user |
+| GET/POST/PUT/DELETE | /api/cart |
+| GET/POST | /api/orders |
+| PUT | /api/orders/{id}/cancel |
+| GET | /api/orders/{id}/payment |
+
+**Admin (Sanctum + is_admin):**
+| Method | Endpoint |
+|--------|----------|
+| GET | /api/admin/dashboard |
+| GET/POST/PUT/DELETE | /api/admin/products |
+| GET/POST/PUT/DELETE | /api/admin/categories |
+| GET/PUT | /api/admin/orders |
+
+**Desain:** Tabel striped, 3 section dengan header warna merah.
+
+---
+
+## SLIDE 12 — FITUR UNGGULAN
 
 **4 fitur:**
 
-| No | Fitur | Icon | Deskripsi |
-|----|-------|------|-----------|
-| 1 | **Location Picker Interaktif** | Pin | Leaflet.js (web) + flutter_map (mobile)  OpenStreetMap gratis, search, drag marker, reverse geocode |
-| 2 | **Admin Panel di Mobile** | HP | Dashboard, CRUD produk + kategori, manajemen pesanan dari HP |
-| 3 | **Cancel Order** | Panah | Batalkan pesanan selama status masih pending (web + mobile) |
-| 4 | **Search Debounce** | Kaca | Pencarian real-time dengan delay 500ms, filter nama + deskripsi |
+| No | Fitur | Deskripsi |
+|----|-------|-----------|
+| 1 | **Location Picker Interaktif** | Leaflet.js (web) + flutter_map (mobile) — OpenStreetMap gratis, search, drag marker, reverse geocode |
+| 2 | **Admin Panel di Mobile** | Dashboard, CRUD produk + kategori, manajemen pesanan dari HP |
+| 3 | **Cancel Order** | Batalkan pesanan selama status masih pending (web + mobile) |
+| 4 | **Search Debounce** | Pencarian real-time dengan delay 500ms, filter nama + deskripsi |
 
 **Desain:** Layout grid 2x2, setiap kartu icon + judul + deskripsi.
 
 ---
 
-## SLIDE 10 — HASIL IMPLEMENTASI WEB (BAGIAN 1)
+## SLIDE 13 — HASIL IMPLEMENTASI WEB (BAGIAN 1)
 
 **4 screenshot grid 2x2:**
 
 | Kiri Atas | Kanan Atas |
 |-----------|------------|
-| **Beranda**  Hero banner merah, best seller grid, kategori cards, new arrival | **Katalog Produk**  Grid 4 kolom, pill filter kategori (Vape/Liquid) |
+| **Beranda** — Hero banner merah, best seller grid, kategori cards, new arrival | **Katalog Produk** — Grid 4 kolom, pill filter kategori (Vape/Liquid) |
 
 | Kiri Bawah | Kanan Bawah |
 |-----------|------------|
-| **Detail Produk**  Gambar, badge, info table, quantity, add to cart | **Checkout + Location Picker**  Form data, Leaflet map, metode bayar |
+| **Detail Produk** — Gambar, badge, info table, quantity, add to cart | **Checkout + Location Picker** — Form data, Leaflet map, metode bayar |
 
 ---
 
-## SLIDE 11 — HASIL IMPLEMENTASI WEB (BAGIAN 2)
+## SLIDE 14 — HASIL IMPLEMENTASI WEB (BAGIAN 2)
 
 **4 screenshot grid 2x2:**
 
 | Kiri Atas | Kanan Atas |
 |-----------|------------|
-| **Dashboard Admin**  4 kartu statistik + chart per kategori | **CRUD Produk**  Form tambah/edit, upload gambar, switch best seller/new arrival |
+| **Admin Dashboard** — 4 kartu statistik + chart per kategori | **Admin Produk** — Form tambah/edit, upload gambar, switch best seller/new arrival |
 
 | Kiri Bawah | Kanan Bawah |
 |-----------|------------|
-| **CRUD Kategori**  Grid dengan jumlah produk + edit/hapus | **Konfirmasi Pembayaran**  Instruksi bayar sesuai metode + tombol WA |
+| **Admin Kategori** — Grid dengan jumlah produk + edit/hapus | **Konfirmasi Pembayaran** — Instruksi bayar sesuai metode + tombol WA |
 
 ---
 
-## SLIDE 12 — HASIL IMPLEMENTASI MOBILE (BAGIAN 1)
+## SLIDE 15 — HASIL IMPLEMENTASI MOBILE (BAGIAN 1)
 
 **6 screenshot grid 3x2:**
 
 | Kiri | Tengah | Kanan |
 |------|--------|-------|
-| **Home**  Hero gradien, kategori, best seller, new arrival, cart badge | **Produk**  Grid 2 kolom, search bar debounce | **Detail**  Info table, quantity, add to cart |
-| **Cart**  Item list, quantity +/- , total | **Checkout**  Form + flutter_map location picker | **Order Detail**  Status, payment instructions, copy-to-clipboard |
+| **Home** — Hero gradien, kategori, best seller, new arrival, cart badge | **Katalog** — Grid 2 kolom, search bar debounce | **Detail** — Info table, quantity, add to cart |
+| **Cart** — Item list, quantity +/-, total | **Checkout** — Form + flutter_map location picker | **Order Detail** — Status, payment instructions, copy-to-clipboard |
 
 ---
 
-## SLIDE 13 — HASIL IMPLEMENTASI MOBILE (BAGIAN 2)
+## SLIDE 16 — HASIL IMPLEMENTASI MOBILE (BAGIAN 2)
 
 **6 screenshot grid 3x2:**
 
 | Kiri | Tengah | Kanan |
 |------|--------|-------|
-| **Admin Dashboard**  Stats grid, menu CRUD | **Admin Produk**  List + search + FAB add | **Admin Product Form**  Image picker, form fields, switches |
-| **Admin Kategori**  List + FAB add | **Admin Order List**  Filter chips | **Admin Order Detail**  Info customer, items, update status |
+| **Admin Dashboard** — Stats grid, menu CRUD | **Admin Produk** — List + search + FAB add | **Admin Product Form** — Image picker, form fields, switches |
+| **Admin Kategori** — List + FAB add | **Admin Order List** — Filter chips | **Admin Order Detail** — Info customer, items, update status |
 
 ---
 
-## SLIDE 14 — REST API ENDPOINTS
+## SLIDE 17 — HASIL PENGUJIAN
 
-| Method | Endpoint | Auth |
-|--------|----------|------|
-| POST | /api/auth/register | - |
-| POST | /api/auth/login | - |
-| POST/GET | /api/auth/logout, /user | Sanctum |
-| GET | /api/products, /products/home | - |
-| GET/POST/PUT/DELETE | /api/cart | Sanctum |
-| GET/POST | /api/orders | Sanctum |
-| PUT | /api/orders/{id}/cancel | Sanctum |
-| GET/POST/PUT/DELETE | /api/admin/products | Admin |
-| GET/POST/PUT/DELETE | /api/admin/categories | Admin |
-| GET/PUT | /api/admin/orders | Admin |
-
-**Desain:** Tabel striped.
-
----
-
-## SLIDE 15 — HASIL PENGUJIAN
-
-| Platform | Fitur | Berhasil | Gagal |
-|----------|-------|----------|-------|
-| Web (Customer) | 15 | 15 | 0 |
-| Web (Admin) | 5 | 5 | 0 |
+| Platform | Jumlah Test | Berhasil | Gagal |
+|----------|-------------|----------|-------|
+| Web (Customer) | 12 | 12 | 0 |
+| Web (Admin) | 4 | 4 | 0 |
 | Mobile (Customer) | 14 | 14 | 0 |
-| Mobile (Admin) | 7 | 7 | 0 |
-| API Endpoints | 20 | 20 | 0 |
+| Mobile (Admin) | 6 | 6 | 0 |
+| API Endpoints | 27 | 27 | 0 |
 
-**Temuan:** Gambar produk mobile (fix: Storage::disk('public')->url), Overflow OrderDetailScreen (fix: Expanded + ellipsis), Gesture conflict flutter_map (fix: GestureDetector)
+**Temuan:**
+- Gambar produk mobile — fix: `Storage::disk('public')->url()` bukan `Storage::url()`
+- Overflow OrderDetailScreen — fix: `Expanded` + `TextOverflow.ellipsis`
+- Gesture conflict flutter_map — fix: `GestureDetector` + `InteractionOptions`
 
 ---
 
-## SLIDE 16 — KESIMPULAN
+## SLIDE 18 — KESIMPULAN & SARAN
 
-1. LiquidPedia berhasil diimplementasikan sebagai e-commerce khusus liquid & vape di **Web (Laravel)** dan **Mobile (Flutter)**
-2. Integrasi mobile dengan backend via **REST API + Sanctum** berjalan baik (20 endpoint)
+**Kesimpulan:**
+1. LiquidPedia berhasil diimplementasikan di **Web (Laravel)** dan **Mobile (Flutter)**
+2. Integrasi mobile via **REST API + Sanctum** berjalan baik (27 endpoint)
 3. Fitur **Location Picker** berhasil di kedua platform (Leaflet.js + flutter_map)
 4. Panel **Admin** dapat diakses dari Web dan Mobile
 
----
-
-## SLIDE 17 — SARAN
-
-1. Integrasi **Payment Gateway** (Midtrans, Xendit) untuk pembayaran otomatis
+**Saran:**
+1. Integrasi **Payment Gateway** (Midtrans, Xendit)
 2. **Notifikasi Push** (Firebase) untuk update status pesanan
 3. **Fitur Review & Rating** produk
 4. **Versi iOS** dari aplikasi mobile
 
+**Desain:** Dua kolom (kiri: kesimpulan, kanan: saran).
+
 ---
 
-## SLIDE 18 — TERIMA KASIH
+## SLIDE 19 — TERIMA KASIH
 
 | Elemen | Isi |
 |--------|-----|
 | Judul | TERIMA KASIH |
-| Subtitle | LiquidPedia  E-Commerce Liquid & Vape |
+| Subtitle | LiquidPedia — E-Commerce Liquid & Vape |
 | Teks | "Questions?" |
 | Kontak | [ISI EMAIL / WHATSAPP] |
 
@@ -262,35 +320,48 @@ Buat diagram layer:
 
 # PETUNJUK SCREENSHOT
 
-## Web (8 screenshot)
+## Web (14 screenshot)
+
 | No | Halaman | Catatan |
 |----|---------|---------|
-| 1 | Beranda (/) | Full page  hero, best seller, kategori, new arrival |
-| 2 | Katalog Produk (/products) | Grid dengan filter kategori aktif |
-| 3 | Detail Produk (/products/{id}) | Gambar, badge, info table, add to cart |
-| 4 | Cart (/cart) | Item list + total |
-| 5 | Checkout (/checkout) | Form + Leaflet map terbuka |
-| 6 | Konfirmasi Bayar (/orders/{id}/...) | Instruksi bayar + tombol WA |
-| 7 | Admin Dashboard (/admin) | 4 kartu statistik + chart |
-| 8 | Admin Produk (/admin/products) | Tabel produk + form create/edit |
+| 1 | Halaman Login | Form login web |
+| 2 | Halaman Beranda | Hero banner, Best Seller, kategori, New Arrival |
+| 3 | Katalog Produk | Grid dengan filter kategori aktif |
+| 4 | Detail Produk | Gambar, badge, info table, add to cart |
+| 5 | Keranjang Belanja | Item list + total |
+| 6 | Checkout | Form + Leaflet map terbuka |
+| 7 | Location Picker | Leaflet map dengan marker |
+| 8 | Konfirmasi Pembayaran | Instruksi bayar + tombol WA |
+| 9 | Riwayat Pesanan | Daftar pesanan + status badge |
+| 10 | Admin Dashboard | 4 kartu statistik |
+| 11 | Admin Produk List | Tabel daftar produk |
+| 12 | Admin Produk Form | Form tambah/edit produk |
+| 13 | Admin Kategori | Grid kategori + jumlah produk |
+| 14 | Admin Pesanan | Daftar pesanan + filter status |
 
-## Mobile (12 screenshot)
+## Mobile (16 screenshot)
+
 | No | Screen | Catatan |
 |----|--------|---------|
-| 1 | Home | Hero, kategori, best seller, new arrival |
-| 2 | Product List | Grid 2 kolom + search bar |
-| 3 | Product Detail | Info table, quantity, badges |
-| 4 | Cart | Items + quantity +/- + total |
-| 5 | Checkout + Map | Form + flutter_map |
-| 6 | Order List | Riwayat + status badge + cancel |
-| 7 | Order Detail | Payment instructions + copy |
-| 8 | Profile | User info + admin panel link |
-| 9 | Admin Dashboard | Stats grid + menu |
-| 10 | Admin Product Form | Image picker + fields |
-| 11 | Admin Order List | Filter chips + list |
-| 12 | Admin Category List | Grid + FAB |
+| 1 | Login | Form login mobile |
+| 2 | Beranda | Hero, kategori, best seller, new arrival, cart badge |
+| 3 | Katalog Produk | Grid 2 kolom + search bar |
+| 4 | Detail Produk | Info table, quantity, badges |
+| 5 | Keranjang | Items + quantity +/- + total |
+| 6 | Checkout | Form + flutter_map |
+| 7 | Location Picker | flutter_map dengan marker |
+| 8 | Konfirmasi Pembayaran | Payment instructions + copy |
+| 9 | Riwayat Pesanan | Riwayat + status badge |
+| 10 | Detail Pesanan | Payment instructions + copy |
+| 11 | Profil | User info + admin panel link |
+| 12 | Admin Dashboard | Stats grid + menu |
+| 13 | Admin Produk List | List + search + FAB |
+| 14 | Admin Produk Form | Image picker + fields |
+| 15 | Admin Kategori | Grid + FAB |
+| 16 | Admin Pesanan | Filter chips + list |
 
 ## Tips
+
 - **Web:** Resize browser ke 1280x720, pakai ekstensi "Full Page Screen Capture"
 - **Mobile:** Screenshot bawaan HP, atau Ctrl+S di emulator Android Studio
 - **Format:** PNG, resolusi cukup tinggi, bersihkan bookmark bar
