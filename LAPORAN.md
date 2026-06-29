@@ -195,160 +195,67 @@ Tailwind CSS adalah utility-first CSS framework yang menyediakan class-class sia
 
 ## 3.1 Fitur untuk Customer
 
-### 3.1.1 Registrasi dan Login
+Berikut adalah fitur yang tersedia untuk customer pada platform web dan mobile:
 
-Customer dapat mendaftar akun baru atau login ke akun yang sudah ada. Fitur ini tersedia di web dan mobile. Web menggunakan session-based authentication, sedangkan mobile menggunakan token-based authentication via Laravel Sanctum. Setelah login, customer dapat mengakses fitur checkout, riwayat pesanan, dan profil.
+**Registrasi & Login** — Customer dapat mendaftar akun baru atau login via session-based auth (web) atau token-based Sanctum (mobile).
+
+**Beranda** — Menampilkan hero banner gradien merah, 4 produk Best Seller, 2 kartu kategori (Vape & Liquid), banner promosi, 4 produk New Arrival, dan cart badge real-time (mobile).
+
+**Katalog Produk** — Grid produk dengan filter kategori, pencarian nama (debounce 500ms di mobile), dan infinite scroll (mobile).
+
+**Detail Produk** — Informasi lengkap: gambar, harga, badge kategori/Best Seller/New Arrival, tabel info (Kategori, Status Stok, Garansi), deskripsi, quantity selector, dan tombol Add to Cart.
+
+**Keranjang Belanja** — Kelola item cart (tambah/ubah/hapus quantity), subtotal per item, grand total. Web: berbasis session (tanpa login). Mobile: berbasis database (harus login).
+
+**Checkout + Location Picker** — Form data pengiriman (9 field), peta interaktif OpenStreetMap (Leaflet.js di web, flutter_map di mobile) dengan fitur forward geocoding, drag/tap marker, reverse geocoding, dan deteksi lokasi otomatis. Metode pembayaran: Transfer Bank (BCA, Mandiri, BRI, BNI), E-Wallet (GoPay, OVO, Dana), QRIS, COD.
+
+**Konfirmasi Pembayaran** — Invoice (nomor: INV/YYYYMMDD/RANDOM6), status bayar, daftar item, total, alamat kirim, instruksi bayar sesuai metode, tombol WhatsApp, dan copy-to-clipboard (mobile).
+
+**Riwayat Pesanan** — Daftar pesanan terbaru dengan status badge color-coded, item, total, metode bayar, tombol petunjuk bayar & batalkan untuk status pending.
+
+**Profil** — Informasi akun (nama, email, avatar inisial), tautan ke pesanan dan logout.
 
 **Screenshot:** Halaman Login Web
-**Screenshot:** Halaman Registrasi Web
 **Screenshot:** Halaman Login Mobile
-**Screenshot:** Halaman Registrasi Mobile
-
-### 3.1.2 Beranda (Home)
-
-Halaman beranda menampilkan:
-- Hero banner dengan gradien merah dan tagline promosi
-- 4 produk Best Seller
-- 2 kartu kategori (Vape dan Liquid)
-- Banner promosi
-- 4 produk New Arrival
-
-Di mobile, terdapat tambahan cart badge pada AppBar yang menampilkan jumlah item di keranjang secara real-time, serta entry animations (fade-in dan slide) pada setiap section.
-
 **Screenshot:** Halaman Beranda Web
 **Screenshot:** Halaman Beranda Mobile
-
-### 3.1.3 Katalog Produk
-
-Katalog produk ditampilkan dalam bentuk grid. Customer dapat:
-- Melihat semua produk
-- Memfilter produk berdasarkan kategori (Vape / Liquid)
-- Mencari produk berdasarkan nama (mobile: search dengan debounce 500ms)
-- Melakukan scroll pagination (mobile: infinite scroll)
-
 **Screenshot:** Katalog Produk Web
-**Screenshot:** Katalog Produk Mobile (dengan search)
-
-### 3.1.4 Detail Produk
-
-Halaman detail produk menampilkan informasi lengkap:
-- Gambar produk
-- Nama, harga (format Rp), dan badge kategori
-- Badge Best Seller dan New Arrival
-- Tabel info produk (Kategori, Status Stok, Garansi)
-- Deskripsi produk
-- Quantity selector (+/-) dengan validasi minimal 1
-- Tombol "Add to Cart"
-
+**Screenshot:** Katalog Produk Mobile
 **Screenshot:** Detail Produk Web
 **Screenshot:** Detail Produk Mobile
-
-### 3.1.5 Keranjang Belanja (Cart)
-
-Customer dapat mengelola keranjang belanja:
-- Menambahkan produk ke keranjang
-- Melihat daftar item di keranjang
-- Mengubah quantity item (+/-)
-- Menghapus item dari keranjang
-- Melihat subtotal per item dan grand total
-
-Di web, cart berbasis session (tidak perlu login untuk menambahkan). Di mobile, cart berbasis database (harus login).
-
 **Screenshot:** Keranjang Belanja Web
 **Screenshot:** Keranjang Belanja Mobile
-
-### 3.1.6 Checkout dengan Location Picker
-
-Proses checkout mencakup:
-- Form data pengiriman (nama, negara, provinsi, kota, kecamatan, kode pos, alamat, telepon, email)
-- Location picker interaktif berbasis OpenStreetMap
-- Pilihan metode pembayaran
-
-**Location Picker** adalah fitur unggulan yang memungkinkan customer memilih lokasi pengiriman melalui peta interaktif. Di web menggunakan Leaflet.js, di mobile menggunakan flutter_map. Fitur yang tersedia:
-- Cari alamat (forward geocoding via Nominatim API)
-- Klik atau drag marker untuk memilih titik koordinat
-- Reverse geocoding (menampilkan alamat dari koordinat)
-- Deteksi lokasi otomatis (web: browser geolocation, mobile: tombol pusatkan)
-
 **Screenshot:** Checkout Web (form + location picker)
 **Screenshot:** Checkout Mobile (form + location picker)
 **Screenshot:** Location Picker Web (Leaflet.js)
 **Screenshot:** Location Picker Mobile (flutter_map)
-
-Metode pembayaran yang tersedia: Transfer Bank (BCA, Mandiri, BRI, BNI), E-Wallet (GoPay, OVO, Dana), QRIS, dan COD.
-
-### 3.1.7 Konfirmasi Pembayaran
-
-Setelah pesanan berhasil dibuat, customer diarahkan ke halaman konfirmasi yang menampilkan:
-- Nomor pesanan (format INV/YYYYMMDD/RANDOM6)
-- Status pembayaran
-- Daftar item yang dipesan
-- Total pembayaran
-- Alamat pengiriman lengkap
-- Instruksi pembayaran sesuai metode yang dipilih
-- Tombol WhatsApp untuk konfirmasi (pre-filled dengan nomor pesanan)
-
 **Screenshot:** Konfirmasi Pembayaran Web
-**Screenshot:** Konfirmasi Pembayaran Mobile (dengan copy-to-clipboard)
-
-Di mobile, nomor rekening dan e-wallet bisa di-copy ke clipboard dengan sekali tap.
-
-### 3.1.8 Riwayat Pesanan
-
-Customer dapat melihat semua pesanan yang pernah dibuat, diurutkan dari yang terbaru. Setiap pesanan menampilkan nomor pesanan, status badge (color-coded), tanggal, daftar item, total, dan metode pembayaran. Untuk pesanan dengan status pending, tersedia tombol "Lihat Petunjuk Pembayaran" dan "Batalkan Pesanan".
-
+**Screenshot:** Konfirmasi Pembayaran Mobile
 **Screenshot:** Riwayat Pesanan Web
 **Screenshot:** Riwayat Pesanan Mobile
 **Screenshot:** Detail Pesanan Mobile
-
-### 3.1.9 Cancel Order
-
-Customer dapat membatalkan pesanan selama statusnya masih "pending" (Menunggu Pembayaran). Fitur ini tersedia di web dan mobile. Konfirmasi dialog ditampilkan sebelum pembatalan dilakukan.
-
-### 3.1.10 Profil
-
-Halaman profil menampilkan informasi akun customer (nama, email, avatar inisial) dan menyediakan tautan ke riwayat pesanan dan logout.
-
-**Screenshot:** Halaman Profil Web
-**Screenshot:** Halaman Profil Mobile (dengan menu Admin Panel)
+**Screenshot:** Halaman Profil Mobile
 
 ## 3.2 Fitur untuk Admin
 
-### 3.2.1 Dashboard
+Berikut adalah fitur yang tersedia untuk admin pada platform web dan mobile:
 
-Dashboard admin menampilkan statistik toko: total produk, total kategori, jumlah best seller, jumlah new arrival, dan jumlah produk per kategori.
+**Dashboard** — Menampilkan statistik toko: total produk, total kategori, jumlah best seller, jumlah new arrival, dan jumlah produk per kategori.
+
+**Manajemen Produk (CRUD)** — Tambah (form + upload gambar max 2MB, jpeg/png/jpg/gif/webp + toggle best seller/new arrival), lihat (tabel dengan thumbnail), edit (form pre-filled, gambar opsional), hapus (konfirmasi, gambar ikut terhapus).
+
+**Manajemen Kategori (CRUD)** — Tambah (nama, slug otomatis), lihat (grid dengan jumlah produk), edit (ubah nama), hapus (dicegah jika kategori masih memiliki produk).
+
+**Manajemen Pesanan** — Lihat semua pesanan, filter status pembayaran, update status (lunas / batalkan).
 
 **Screenshot:** Admin Dashboard Web
 **Screenshot:** Admin Dashboard Mobile
-
-### 3.2.2 Manajemen Produk (CRUD)
-
-Admin dapat mengelola produk melalui:
-- **Tambah produk**: form nama, deskripsi, harga, kategori, upload gambar (max 2MB, format jpeg/png/jpg/gif/webp), switch best seller dan new arrival
-- **Lihat produk**: tabel/grid daftar produk dengan thumbnail
-- **Edit produk**: form pre-filled, gambar opsional
-- **Hapus produk**: dengan konfirmasi, gambar ikut terhapus
-
 **Screenshot:** Admin Produk List Web
-**Screenshot:** Admin Produk Form Web (tambah/edit)
+**Screenshot:** Admin Produk Form Web
 **Screenshot:** Admin Produk List Mobile
 **Screenshot:** Admin Produk Form Mobile
-
-### 3.2.3 Manajemen Kategori (CRUD)
-
-Admin dapat mengelola kategori melalui:
-- **Tambah kategori**: input nama, slug otomatis
-- **Lihat kategori**: grid dengan jumlah produk
-- **Edit kategori**: ubah nama
-- **Hapus kategori**: dicegah jika kategori masih memiliki produk
-
-**Screenshot:** Admin Kategori Web (list + form)
+**Screenshot:** Admin Kategori Web
 **Screenshot:** Admin Kategori Mobile
-
-### 3.2.4 Manajemen Pesanan
-
-Admin dapat melihat semua pesanan, memfilter berdasarkan status pembayaran, dan memperbarui status pembayaran (menandai lunas atau membatalkan).
-
 **Screenshot:** Admin Pesanan Web
 **Screenshot:** Admin Pesanan Mobile
 
